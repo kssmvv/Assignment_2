@@ -53,7 +53,7 @@ def split_features_and_labels(df, label):
         raise ValueError("Label column must contain exactly two categories.")
     
     # Map the categories to 0 and 1
-    y = df[label].map({categories[1]: 0, categories[1]: 1}) #<--------------------Bug: categories[0]:0
+    y = df[label].map({categories[0]: 0, categories[1]: 1})
     
     # Drop the label column from the features
     features = df.drop(label, axis=1)
@@ -75,7 +75,11 @@ def perform_PCA(df,n_of_components,scaler):
     Returns:
         np.ndarray: A NumPy array with the reduced feature set, containing 2 principal components.
     """
-    df_scaled = scaler.fit(df)#.fit_transform, not .fit
+    df_scaled = scaler.fit_transform(df)
     pca_model = PCA(n_components=n_of_components)
     data_PCA = pca_model.fit_transform(df_scaled)
     return data_PCA
+
+
+
+
