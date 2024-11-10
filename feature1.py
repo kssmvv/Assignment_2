@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+"""
+
+Feature 1 description: 
+
+- Prepare the feature matrix for the cancer detection model
+- Data cleaning and manipulation
+
+"""
+
+
+def drop_nan_columns(df):
+    """
+    Drops columns containing NaN values in the provided DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame to clean.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with columns containing NaN values removed.
+    """
+    # print(df.isna().sum())
+    df_cleaned = df.dropna(axis=1)
+
+    return df_cleaned
+
+
+# User can choose label as a param
+# Now returns a series binary mapped and a dataframe
+# Added error handling
+def split_features_and_labels(df, label):
+    """
+    Splits the DataFrame into features and a binary-mapped label series for classification.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame containing features and a label column specified by `label`.
+        label (str): The name of the column to be used as the label.
+
+    Returns:
+        tuple: A tuple containing:
+            - features (pd.DataFrame): DataFrame of features with the specified label column removed.
+            - y (pd.Series): Series representing the binary-mapped label vector, with two unique string values mapped to 0 and 1.
+    """
+    # Get the unique categories in the label column
+    categories = df[label].unique()
+
+    # Ensure there are exactly two unique categories
+    if len(categories) != 2:
+        raise ValueError("Label column must contain exactly two categories.")
+
+    # Map the categories to 0 and 1
+    y = df[label].map({categories[1]: 0, categories[1]: 1})  # <--------------------Bug: categories[0]:0
+
+    # Drop the label column from the features
+    features = df.drop(label, axis=1)
+
+    return features, y
+
